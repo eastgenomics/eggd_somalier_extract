@@ -39,7 +39,11 @@
     "version": "1"
   },
   "access": {
-    "project": "CONTRIBUTE"
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW",
+    "network": [
+      "*"
+    ]
   },
   "regionalOptions": {
     "aws:eu-central-1": {
