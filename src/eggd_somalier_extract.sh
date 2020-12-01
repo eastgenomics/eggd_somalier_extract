@@ -23,49 +23,37 @@ main() {
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F403K904F30y2vpVFqxB9kz7
     # Indexed reference genome
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F3zxG0Q4fXX9YFjP1v5jK9jf
-    # Site for hg38 no chr vcf
-    dx download project-FyXXbvQ4vQpqBK23B2vPjfVV:file-FyzvVzQ4vQpqbJ6X6g0GkB58
-
-    ls
-    
-    # Need to unzip..
-    echo "--------------Gunzip genome-----------------"
-
-    gunzip hs37d5.fa.gz
-    gunzip hs37d5.fasta-index.tar.gz
+    # Site for GRCh37 no chr vcf
+    # dx download project-FyXXbvQ4vQpqBK23B2vPjfVV:file-Fz0jV9j4vQpqP7pY7J94y4qx
 
     ls -a
+    
+    echo "---------- Extract (docker 1)---------------"
+    
+    service docker start
 
     # Compile tabix
-    echo "--------------Compile tabix-----------------"
-    cd /packages
-    echo "--------------tar -jxvf tabix-0.2.6.tar.bz2-----------------"
-    tar jxvf tabix-0.2.6.tar.bz2
-    cd tabix-0.2.6
-    make
-    sudo cp bgzip tabix /usr/bin/  # need root access
-    
-    cd ~
+    docker load -i somalier_v0_2_12.tar.gz
 
+    echo "---------- Extract (docker 2)---------------"
 
-    # Need to index sample vcf
-    echo "--------------Index sample vcfs-----------------"
-    bgzip input_file
-    tabix -p vcf input_file.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fa.gz
 
-    ls -a
-    
-    # Give permission rights to 
-    echo "--------------Change permissions-----------------"
-    sudo chmod 777 /usr/bin/somalier
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fasta-index.tar.gz
 
-    # Now run static binary in resources/usr/bin
-    echo "--------------Run Somalier extract-----------------"
-    somalier extract --sites sites.hg38.nochr.vcf -f hs37d5.fa input_file.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 bgzip /data/input_file
+
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 tabix -p vcf /data/input_file.gz
+
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 somalier extract -d data/extracted/ --sites /data/sites.GRCh37.vcf -f /data/hs37d5.fa /data/input_file.gz
+
     ls -a
 
      
     echo "--------------Uploading output files--------------"
+    chmod 777 extracted/
+
+    find extracted/ -type f -name "*" -print0 | xargs -0 -I {} mv {} .
 
     output=(`ls *.somalier`)
     echo $output
@@ -75,13 +63,10 @@ main() {
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
-    mkdir -p /home/dnanexus/out/extracted/
-
-    cp $output /home/dnanexus/out/extracted/${output}
-
     #dx-upload-all-outputs
 
-    out_file=$(dx upload /home/dnanexus/out/extracted/${output} --brief)
+    out_file=$(dx upload /home/dnanexus/${output} --brief)
 
     dx-jobutil-add-output out_file "$out_file" --class=file
 }
+
