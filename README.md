@@ -10,7 +10,7 @@ This app is based on https://github.com/brentp/somalier
 ![Image of workflow](https://github.com/eastgenomics/eggd_somalier_extract/blob/dev/somalier_extract_workflow.png)
 
 ## What are the inputs?
-At the moment, VCFs can be inputted. Somalier can also handle bam/cram files. Defaults files are: b37 reference fasta file and sites.hg38.nochr.vcf which the latter is provided in the Somalier repo (https://github.com/brentp/somalier/releases/tag/v0.2.12).
+At the moment, VCFs can be inputted. Somalier can also handle bam/cram files. Defaults files are: b37 reference fasta file and sites.GRCh37.nochr.vcf which the latter is provided in the Somalier repo (https://github.com/brentp/somalier/releases/tag/v0.2.12).
 
 ## What are the outputs?
 Output is a somalier file type with the sample name e.g Sample1.somalier - this file is binary.
