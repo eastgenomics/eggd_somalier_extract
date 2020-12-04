@@ -58,13 +58,6 @@ main() {
     output=(`ls *.somalier`)
     echo $output
 
-    # The following line(s) use the utility dx-jobutil-add-output to format and
-    # add output variables to your job's output as appropriate for the output
-    # class.  Run "dx-jobutil-add-output -h" for more information on what it
-    # does.
-
-    #dx-upload-all-outputs
-
     out_file=$(dx upload /home/dnanexus/${output} --brief)
 
     dx-jobutil-add-output out_file "$out_file" --class=file
