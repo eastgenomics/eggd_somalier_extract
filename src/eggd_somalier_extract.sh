@@ -31,7 +31,7 @@ main() {
     # Load tabix
     docker load -i somalier_v0_2_12.tar.gz
 
-    echo "---------- Extract ---------------"
+    echo "---------- Extract sites into extracted/ ---------------"
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fa.gz
 
