@@ -26,14 +26,12 @@ main() {
     
     ls -a
     
-    echo "---------- Extract (docker 1)---------------"
-    
     service docker start
 
-    # Compile tabix
+    # Load tabix
     docker load -i somalier_v0_2_12.tar.gz
 
-    echo "---------- Extract (docker 2)---------------"
+    echo "---------- Extract ---------------"
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fa.gz
 
