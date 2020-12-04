@@ -23,9 +23,7 @@ main() {
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F403K904F30y2vpVFqxB9kz7
     # Indexed reference genome
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F3zxG0Q4fXX9YFjP1v5jK9jf
-    # Site for GRCh37 no chr vcf
-    # dx download project-FyXXbvQ4vQpqBK23B2vPjfVV:file-Fz0jV9j4vQpqP7pY7J94y4qx
-
+    
     ls -a
     
     echo "---------- Extract (docker 1)---------------"
