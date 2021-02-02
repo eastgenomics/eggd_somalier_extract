@@ -3,7 +3,7 @@
 
 
 # Exit at any point if there is any error and output each line as it is executed (for debugging)
-set -e -x -o pipefail
+set -exo pipefail
 
 main() {
 
@@ -25,9 +25,7 @@ main() {
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F403K904F30y2vpVFqxB9kz7
     # Indexed reference genome
     dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F3zxG0Q4fXX9YFjP1v5jK9jf
-    
-    ls -a
-    
+      
     service docker start
 
     # Load tabix
@@ -44,8 +42,6 @@ main() {
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/*.annotated.vcf.gz"
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/sites.GRCh37.vcf -f /data/hs37d5.fa /data/*.annotated.vcf.gz"
-
-    ls -a
     
     chmod 777 extracted/
 
