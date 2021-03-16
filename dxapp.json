@@ -1,20 +1,47 @@
 {
-  "name": "eggd_somalier_extract",
-  "title": "Somalier extract",
-  "summary": "Somalier extract",
+  "name": "eggd_somalier_extract_v1.0.0",
+  "title": "eggd_somalier_extract_v1.0.0",
+  "summary": "Extracts the sites needed to do sex check",
   "dxapi": "1.0.0",
   "properties": {
     "githubRelease": "v1.0.0"
   },
   "inputSpec": [
     {
-      "name": "input_file",
+      "name": "sample_vcf",
       "class": "file",
       "optional": false,
       "patterns": [
         "*.vcf"
       ],
-      "help": ""
+      "help": "Sample's vcf file (filename format: SampleID_EPICSP_SampleType_ClinicalIndication_Panel_Sex_Egg)"
+    }, 
+    {
+      "name": "snp_site_vcf",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.vcf"
+      ],
+      "help": "vcf file containing sites to filter from sample vcf."
+    }, 
+    {
+      "name": "reference_genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fa.gz"
+      ],
+      "help": "Reference genome (build 37/38)."
+    }, 
+    {
+      "name": "reference_genome_index",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta-index.tar.gz"
+      ],
+      "help": "Indexed reference genome (build 37/38)."
     }
   ],
   "outputSpec": [
