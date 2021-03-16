@@ -9,6 +9,7 @@
   "inputSpec": [
     {
       "name": "sample_vcf",
+      "label": "Sample vcf",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -18,15 +19,17 @@
     }, 
     {
       "name": "snp_site_vcf",
+      "label": "Snp sites vcf",
       "class": "file",
       "optional": false,
       "patterns": [
         "*.vcf"
       ],
-      "help": "vcf file containing sites to filter from sample vcf."
+      "help": "vcf file containing sites to filter from sample vcf. Must be same build as reference genome."
     }, 
     {
       "name": "reference_genome",
+      "label": "Reference genome",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -36,6 +39,7 @@
     }, 
     {
       "name": "reference_genome_index",
+      "label": "Indexed reference genome",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -46,19 +50,19 @@
   ],
   "outputSpec": [
     {
-      "name": "out_file",
-      "label": "file",
+      "name": "somalier_output",
+      "label": "Binary somalier file",
       "class": "file",
       "patterns": [
-        "*"
+        "*.somalier"
       ],
-      "help": ""
+      "help": "Binary somalier file that contains extracted sites from sample vcf."
     }
   ],
   "runSpec": {
     "timeoutPolicy": {
       "*": {
-        "hours": 2
+        "hours": 1
       }
     },
     "interpreter": "bash",
@@ -69,10 +73,7 @@
   },
   "access": {
     "project": "CONTRIBUTE",
-    "allProjects": "VIEW",
-    "network": [
-      "*"
-    ]
+    "allProjects": "VIEW"
   },
   "regionalOptions": {
     "aws:eu-central-1": {

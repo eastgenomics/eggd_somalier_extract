@@ -7,61 +7,65 @@ set -exo pipefail
 
 main() {
 
-    echo "Value of input_file: '$input_file'"
+    echo "sample_vcf: '$sample_vcf'"
+    echo "snp_site_vcf: '$snp_site_vcf'"
+    echo "reference_genome: '$reference_genome'"
+    echo "reference_genome_index: '$reference_genome_index'"
 
-    # The following line(s) use the dx command-line tool to download your file
-    # inputs to the local file system using variable names for the filenames. To
-    # recover the original filenames, you can use the output of "dx describe
-    # "$variable" --name".
+    echo "----------Load input data---------------"
 
+    dx download "$sample_vcf" -o sample_vcf
+    dx download "$snp_site_vcf" -o snp_site_vcf
+    dx download "$reference_genome" -o reference_genome.gz
+    dx download "$reference_genome_index" -o reference_genome_index.gz
+    dx ls
 
-    dx download "$input_file" -o input_file
-    org_filename=$(dx describe "$input_file" --name)
-    mv input_file $org_filename
+    # We need to store the filename as somalier extract will extract the 
+    # sample id only from the vcf - so the somalier output will be sampleID.somalier.
+    # We need to retain the other information in the full filename to later
+    # pull out reported sex in the filname.
 
-    echo "----------Load reference genome---------------"
+    filename=$(dx describe "$sample_vcf" --name) # extracts the original filename
 
-    # Reference genome b37 (HS37D5.fa.gz)
-    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F403K904F30y2vpVFqxB9kz7
-    # Indexed reference genome
-    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-F3zxG0Q4fXX9YFjP1v5jK9jf
-      
+    echo "----------Extract sites into extracted/ using docker---------------"
+
     service docker start
 
-    # Load tabix
     docker load -i somalier_v0_2_12.tar.gz
 
-    echo "---------- Extract sites into extracted/ ---------------"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome.gz
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fa.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome_index.gz
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/hs37d5.fasta-index.tar.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "bgzip /data/sample_vcf"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "bgzip /data/*.annotated.vcf"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf.gz"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/*.annotated.vcf.gz"
-
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/sites.GRCh37.vcf -f /data/hs37d5.fa /data/*.annotated.vcf.gz"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/snp_site_vcf -f /data/reference_genome /data/sample_vcf.gz"
     
     chmod 777 extracted/
 
-    find extracted/ -type f -name "*" -print0 | xargs -0 -I {} mv {} .
+    # The somalier file is in extracted folder, move to the main folder
+
+    mv extracted/*.somalier .
 
     echo "--------------Renaming output files--------------" 
-    # The filenames are extracted from the vcf files but we want to keep 
-    # the filename from the original files
 
-    filename="$(echo $org_filename | sed 's/_markdup_recalibrated_Haplotyper.refseq_nirvana_2010.annotated.vcf//')"
-    echo $filename
-    mv *.somalier ${filename}.somalier
+    # The filenames contains the vcf filename which have unnecessary parts
+    # that were appeneded from the workflow. We don't need that so we can
+    # retain the first 6 parts that are seperated by _
+
+    somalier_filename="$(echo $filename | cut -d "_" -f -6)"
+    echo $somalier_filename
+    mv *.somalier ${somalier_filename}.somalier # replace the filename
 
     echo "--------------Uploading output files--------------"
 
     output=(`ls *.somalier`)
     echo $output
 
-    out_file=$(dx upload /home/dnanexus/${output} --brief)
+    somalier_output=$(dx upload /home/dnanexus/${output} --brief)
 
-    dx-jobutil-add-output out_file "$out_file" --class=file
+    dx-jobutil-add-output somalier_output "$somalier_output" --class=file
 }
 
