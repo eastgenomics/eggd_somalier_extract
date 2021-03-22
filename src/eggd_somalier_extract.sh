@@ -55,7 +55,7 @@ main() {
     # that were appeneded from the workflow. We don't need that so we can
     # retain the first 6 parts that are seperated by _
 
-    somalier_filename="$(echo $filename | cut -d "_" -f -6)"
+    somalier_filename="$(echo $filename | cut -d "_" -f -7)"
     echo $somalier_filename
     mv *.somalier ${somalier_filename}.somalier # replace the filename
 
