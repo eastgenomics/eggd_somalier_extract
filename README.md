@@ -19,6 +19,6 @@ Output is a somalier file type with the sample name e.g Sample1.somalier - this 
 This app is only used to extract sites. The output file (.somalier) can be used to predict the relatedness and sex of sample. This app can be used in a single workflow as the app runs separately for each vcf file.The app can also be used if ancestry wants to be calculated.
 
 ## How does this app calculate relatedness and sex of sample?
-To run sex check and relatedness - the app somalier_related needs to be run. This will output a few tsv's and html of all samples sex, relatedness and ancestry.
+To run sex check and relatedness - the app somalier_relate needs to be run. This will output a few tsv's and html of all samples sex, relatedness and ancestry.
 
 ### This app was made by EMEE GLH
