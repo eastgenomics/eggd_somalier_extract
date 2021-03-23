@@ -1,0 +1,87 @@
+{
+  "name": "eggd_somalier_extract_v1.0.0",
+  "title": "eggd_somalier_extract_v1.0.0",
+  "summary": "Extracts the sites needed to do sex check",
+  "dxapi": "1.0.0",
+  "properties": {
+    "githubRelease": "v1.0.0"
+  },
+  "inputSpec": [
+    {
+      "name": "sample_vcf",
+      "label": "Sample vcf",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.vcf"
+      ],
+      "help": "Sample's vcf file (filename format: SampleID_EPICSP_SampleType_ClinicalIndication_Panel_Sex_Egg)"
+    }, 
+    {
+      "name": "snp_site_vcf",
+      "label": "Snp sites vcf",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.vcf"
+      ],
+      "help": "vcf file containing sites to filter from sample vcf. Must be same build as reference genome."
+    }, 
+    {
+      "name": "reference_genome",
+      "label": "Reference genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fa.gz"
+      ],
+      "help": "Reference genome (build 37/38)."
+    }, 
+    {
+      "name": "reference_genome_index",
+      "label": "Indexed reference genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta-index.tar.gz"
+      ],
+      "help": "Indexed reference genome (build 37/38)."
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "somalier_output",
+      "label": "Binary somalier file",
+      "class": "file",
+      "patterns": [
+        "*.somalier"
+      ],
+      "help": "Binary somalier file that contains extracted sites from sample vcf."
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/eggd_somalier_extract.sh",
+    "version": "1"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW"
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x2"
+        }
+      }
+    }
+  }
+}
