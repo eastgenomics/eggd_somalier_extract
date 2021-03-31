@@ -1,5 +1,5 @@
 #!/bin/bash
-# eggd_somalier_extract 0.0.1
+# eggd_somalier_extract 1.0.1
 
 
 # Exit at any point if there is any error and output each line as it is executed (for debugging)
@@ -18,7 +18,9 @@ main() {
     dx download "$snp_site_vcf" -o snp_site_vcf
     dx download "$reference_genome" -o reference_genome.gz
     dx download "$reference_genome_index" -o reference_genome_index.gz
+    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-G1Gx2p8433Gg8Kf644jqxXJG -o somalier_v0_2_12.tar.gz
     dx ls
+
 
     # We need to store the filename as somalier extract will extract the 
     # sample id only from the vcf - so the somalier output will be sampleID.somalier.
