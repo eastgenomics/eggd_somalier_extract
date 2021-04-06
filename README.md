@@ -7,7 +7,7 @@ Somalier extracts known sites that have a population allele frequency close to 0
 
 This app is based on https://github.com/brentp/somalier
 
-![Image of workflow](https://github.com/eastgenomics/eggd_somalier_extract/blob/dev/somalier_extract_workflow.png)
+![Image of workflow](somalier_extract_workflow.png)
 
 ## What are the inputs?
 This app only accepts VCFs as input. Somalier can also handle bam/cram files, but this functionality is not currently implemented within the app. It also requires the reference genome and a snp sites vcf with the same build as the reference genome. (https://github.com/brentp/somalier/releases/tag/v0.2.12).
