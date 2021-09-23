@@ -1,5 +1,5 @@
 #!/bin/bash
-# eggd_somalier_extract 1.0.1
+# eggd_somalier_extract 1.0.2
 
 
 # Exit at any point if there is any error and output each line as it is executed (for debugging)
@@ -27,8 +27,6 @@ main() {
     # We need to retain the other information in the full filename to later
     # pull out reported sex in the filname.
 
-    filename=$(dx describe "$sample_vcf" --name) # extracts the original filename
-
     echo "----------Extract sites into extracted/ using docker---------------"
 
     service docker start
@@ -39,11 +37,9 @@ main() {
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome_index.gz
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "bgzip /data/sample_vcf"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf.gz"
-
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/snp_site_vcf -f /data/reference_genome /data/sample_vcf.gz"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/snp_site_vcf -f /data/reference_genome /data/sample_vcf"
     
     chmod 777 extracted/
 
@@ -56,10 +52,6 @@ main() {
     # The filenames contains the vcf filename which have unnecessary parts
     # that were appeneded from the workflow. We don't need that so we can
     # retain the first 6 parts that are seperated by _
-
-    somalier_filename="$(echo $filename | cut -d "_" -f -7)"
-    echo $somalier_filename
-    mv *.somalier ${somalier_filename}.somalier # replace the filename
 
     echo "--------------Uploading output files--------------"
 
