@@ -47,12 +47,6 @@ main() {
 
     mv extracted/*.somalier .
 
-    echo "--------------Renaming output files--------------" 
-
-    # The filenames contains the vcf filename which have unnecessary parts
-    # that were appeneded from the workflow. We don't need that so we can
-    # retain the first 6 parts that are seperated by _
-
     echo "--------------Uploading output files--------------"
 
     output=(`ls *.somalier`)
