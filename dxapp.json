@@ -8,7 +8,7 @@
   "inputSpec": [
     {
       "name": "sample_vcf",
-      "label": "Sample .vcf.gz",
+      "label": "Sample vcf",
       "class": "file",
       "optional": false,
       "patterns": [
