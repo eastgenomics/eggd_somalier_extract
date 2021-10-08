@@ -38,8 +38,9 @@ main() {
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome_index.gz
 
     # If sample is not bgzip, then bgzip it
+    # use command file which describes what type of file you have
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "if [[ ! /data/sample_vcf =~ .*".gz" ]]; then echo 'not compressed' ; bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; else echo 'already compressed'; fi"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "if [[ $(file -b --mime-type sample_vcf) == 'application/gzip' ]]; then echo 'already compressed' ; else echo 'not compressed' ; bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; fi"
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf"
 
