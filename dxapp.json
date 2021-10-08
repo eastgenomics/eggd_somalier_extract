@@ -12,7 +12,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.vcf.gz"
+        "*.vcf", "*.vcf.gz"
       ],
       "help": "Sample's vcf file (filename format: SampleID_EPICSP_SampleType_ClinicalIndication_Panel_Sex_Egg)"
     }, 
