@@ -37,6 +37,10 @@ main() {
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome_index.gz
 
+    # If sample is not bgzip, then bgzip it
+
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "if [[ ! /data/sample_vcf =~ .*".gz" ]]; then echo 'not compressed' ; bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; else echo 'already compressed'; fi"
+
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf"
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/snp_site_vcf -f /data/reference_genome /data/sample_vcf"
