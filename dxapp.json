@@ -1,10 +1,9 @@
 {
-  "name": "eggd_somalier_extract_v1.0.1",
-  "title": "eggd_somalier_extract_v1.0.1",
+  "name": "eggd_somalier_extract_v1.0.2",
+  "title": "eggd_somalier_extract_v1.0.2",
   "summary": "Extracts the sites needed to do sex check",
-  "dxapi": "1.0.1",
   "properties": {
-    "githubRelease": "v1.0.1"
+    "githubRelease": "v1.0.2"
   },
   "inputSpec": [
     {
@@ -13,7 +12,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.vcf"
+        "*.vcf", "*.vcf.gz"
       ],
       "help": "Sample's vcf file (filename format: SampleID_EPICSP_SampleType_ClinicalIndication_Panel_Sex_Egg)"
     }, 
