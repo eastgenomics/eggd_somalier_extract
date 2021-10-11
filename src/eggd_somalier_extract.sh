@@ -40,11 +40,17 @@ main() {
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "if [[ $(file -b --mime-type sample_vcf) == 'application/gzip' ]]; then echo 'already compressed' ; else echo 'not compressed' ; bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; fi"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    if [[ $(file -b --mime-type sample_vcf) == 'application/gzip' ]]; \
+    then echo 'already compressed' ; else echo 'not compressed' ; \
+    bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; fi"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "tabix -p vcf /data/sample_vcf"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    tabix -p vcf /data/sample_vcf"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c "somalier extract -d data/extracted/ --sites /data/snp_site_vcf -f /data/reference_genome /data/sample_vcf"
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    somalier extract -d data/extracted/ --sites /data/snp_site_vcf \
+    -f /data/reference_genome /data/sample_vcf"
     
     chmod 777 extracted/
 
