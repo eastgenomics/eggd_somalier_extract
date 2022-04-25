@@ -1,5 +1,5 @@
 #!/bin/bash
-# eggd_somalier_extract 1.0.2
+# eggd_somalier_extract 1.0.3
 
 
 # Exit at any point if there is any error and output each line as it is executed (for debugging)
