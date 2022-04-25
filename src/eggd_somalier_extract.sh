@@ -18,7 +18,7 @@ main() {
     dx download "$snp_site_vcf" -o snp_site_vcf
     dx download "$reference_genome" -o reference_genome.gz
     dx download "$reference_genome_index" -o reference_genome_index.gz
-    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-G1Gx2p8433Gg8Kf644jqxXJG -o somalier_v0_2_12.tar.gz
+    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-G9Y6xB0433Gv9q9Y2G7v8162 -o somalier_v0_2_15.tar.gz
     dx ls
 
 
@@ -33,22 +33,22 @@ main() {
 
     docker load -i somalier_v0_2_12.tar.gz
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 gunzip /data/reference_genome.gz
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 gunzip /data/reference_genome_index.gz
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 gunzip /data/reference_genome_index.gz
 
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
     if [[ $(file -b --mime-type sample_vcf) == 'application/gzip' ]]; \
     then echo 'already compressed' ; else echo 'not compressed' ; \
     bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; fi"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
     tabix -p vcf /data/sample_vcf"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.12 /bin/bash -c " \
+    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
     somalier extract -d data/extracted/ --sites /data/snp_site_vcf \
     -f /data/reference_genome /data/sample_vcf"
     
