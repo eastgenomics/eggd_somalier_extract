@@ -1,9 +1,9 @@
 {
-  "name": "eggd_somalier_extract_v1.0.2",
-  "title": "eggd_somalier_extract_v1.0.2",
+  "name": "eggd_somalier_extract_v1.0.3",
+  "title": "eggd_somalier_extract_v1.0.3",
   "summary": "Extracts the sites needed to do sex check",
   "properties": {
-    "githubRelease": "v1.0.2"
+    "githubRelease": "v1.0.3"
   },
   "inputSpec": [
     {
