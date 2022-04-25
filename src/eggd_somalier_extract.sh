@@ -31,7 +31,7 @@ main() {
 
     service docker start
 
-    docker load -i somalier_v0_2_12.tar.gz
+    docker load -i somalier_v0_2_15.tar.gz
 
     docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 gunzip /data/reference_genome.gz
 
