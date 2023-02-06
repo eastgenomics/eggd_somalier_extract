@@ -1,6 +1,6 @@
 {
-  "name": "eggd_somalier_extract_v1.0.3",
-  "title": "eggd_somalier_extract_v1.0.3",
+  "name": "eggd_somalier_extract",
+  "title": "eggd_somalier_extract",
   "summary": "Extracts the sites needed to do sex check",
   "dxapi": "1.0.0",
   "version": "1.1.0",
