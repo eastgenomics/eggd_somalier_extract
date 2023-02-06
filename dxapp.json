@@ -76,7 +76,7 @@
     "interpreter": "bash",
     "release": "20.04",
     "distribution": "Ubuntu",
-    "file": "src/eggd_somalier_relate.sh",
+    "file": "src/eggd_somalier_extract.sh",
     "version": "0"
   },
   "developers":[
