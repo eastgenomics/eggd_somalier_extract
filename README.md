@@ -23,4 +23,4 @@ This app is only used to extract sites. The output file (.somalier) can be used 
 ## How does this app calculate relatedness and sex of sample?
 To run sex check and relatedness - the app somalier_relate needs to be run. This will output a few tsv's and html of all samples sex, relatedness and ancestry.
 
-### This app was made by East Genomics
+### This app was made by East GLH
