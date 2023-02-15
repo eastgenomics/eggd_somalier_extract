@@ -1,10 +1,9 @@
 {
-  "name": "eggd_somalier_extract_v1.0.3",
-  "title": "eggd_somalier_extract_v1.0.3",
+  "name": "eggd_somalier_extract",
+  "title": "eggd_somalier_extract",
   "summary": "Extracts the sites needed to do sex check",
-  "properties": {
-    "githubRelease": "v1.0.3"
-  },
+  "dxapi": "1.0.0",
+  "version": "1.1.0",
   "inputSpec": [
     {
       "name": "sample_vcf",
@@ -14,18 +13,18 @@
       "patterns": [
         "*.vcf", "*.vcf.gz"
       ],
-      "help": "Sample's vcf file (filename format: SampleID_EPICSP_SampleType_ClinicalIndication_Panel_Sex_Egg)"
-    }, 
+      "help": "Sample vcf file"
+    },
     {
       "name": "snp_site_vcf",
-      "label": "Snp sites vcf",
+      "label": "Snp sites vcfp provided by somalier",
       "class": "file",
       "optional": false,
       "patterns": [
         "*.vcf"
       ],
       "help": "vcf file containing sites to filter from sample vcf. Must be same build as reference genome."
-    }, 
+    },
     {
       "name": "reference_genome",
       "label": "Reference genome",
@@ -35,7 +34,7 @@
         "*.fa.gz"
       ],
       "help": "Reference genome (build 37/38)."
-    }, 
+    },
     {
       "name": "reference_genome_index",
       "label": "Indexed reference genome",
@@ -45,6 +44,16 @@
         "*.fasta-index.tar.gz"
       ],
       "help": "Indexed reference genome (build 37/38)."
+    },
+    {
+      "name": "somalier_docker",
+      "label": "Somalier Docker image",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.tar.gz"
+      ],
+      "help": "Somalier docker image"
     }
   ],
   "outputSpec": [
@@ -65,11 +74,17 @@
       }
     },
     "interpreter": "bash",
-    "release": "16.04",
+    "release": "20.04",
     "distribution": "Ubuntu",
     "file": "src/eggd_somalier_extract.sh",
-    "version": "1"
+    "version": "0"
   },
+  "developers":[
+    "org-emee_1"
+  ],
+  "authorizedUsers": [
+    "org-emee_1"
+  ],
   "access": {
     "project": "CONTRIBUTE",
     "allProjects": "VIEW"

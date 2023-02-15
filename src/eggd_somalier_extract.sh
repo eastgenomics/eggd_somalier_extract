@@ -1,5 +1,5 @@
 #!/bin/bash
-# eggd_somalier_extract 1.0.3
+# eggd_somalier_extract
 
 
 # Exit at any point if there is any error and output each line as it is executed (for debugging)
@@ -7,51 +7,52 @@ set -exo pipefail
 
 main() {
 
-    echo "sample_vcf: '$sample_vcf'"
-    echo "snp_site_vcf: '$snp_site_vcf'"
-    echo "reference_genome: '$reference_genome'"
-    echo "reference_genome_index: '$reference_genome_index'"
+    echo "sample_vcf: '$sample_vcf_name'"
+    echo "snp_site_vcf: '$snp_site_vcf_name'"
+    echo "reference_genome: '$reference_genome_name'"
+    echo "reference_genome_index: '$reference_genome_index_name'"
+    echo "somalier_docker: '$somalier_docker_name'"
 
     echo "----------Load input data---------------"
 
-    dx download "$sample_vcf" -o sample_vcf
-    dx download "$snp_site_vcf" -o snp_site_vcf
-    dx download "$reference_genome" -o reference_genome.gz
-    dx download "$reference_genome_index" -o reference_genome_index.gz
-    dx download project-Fkb6Gkj433GVVvj73J7x8KbV:file-G9Y6xB0433Gv9q9Y2G7v8162 -o somalier_v0_2_15.tar.gz
-    dx ls
+    dx-download-all-inputs --parallel
+    find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/
 
-
-    # We need to store the filename as somalier extract will extract the 
+    # We need to store the filename as somalier extract will extract the
     # sample id only from the vcf - so the somalier output will be sampleID.somalier.
     # We need to retain the other information in the full filename to later
-    # pull out reported sex in the filname.
+    # pull out reported sex in the filename.
 
     echo "----------Extract sites into extracted/ using docker---------------"
 
     service docker start
 
-    docker load -i somalier_v0_2_15.tar.gz
+    # Load docker image
+    docker load -i "${somalier_docker_name}"
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 gunzip /data/reference_genome.gz
+    # Get image id from docker image loaded
+    SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 gunzip /data/reference_genome_index.gz
 
+    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_name}"
+
+    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_index_name}"
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
-    if [[ $(file -b --mime-type sample_vcf) == 'application/gzip' ]]; \
-    then echo 'already compressed' ; else echo 'not compressed' ; \
-    bgzip /data/sample_vcf; mv /data/sample_vcf.gz /data/sample_vcf; fi"
+    if [[ "$sample_vcf_name" == *.vcf ]]; then
+        docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} bgzip /data/"${sample_vcf_name}"
+        input_vcf="${sample_vcf_name}.gz"
+    else
+        echo 'Already compressed'
+        input_vcf="${sample_vcf_name}"
+    fi
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
-    tabix -p vcf /data/sample_vcf"
+    docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} tabix -p vcf /data/${input_vcf}
 
-    docker run -v /home/dnanexus:/data brentp/somalier:v0.2.15 /bin/bash -c " \
-    somalier extract -d data/extracted/ --sites /data/snp_site_vcf \
-    -f /data/reference_genome /data/sample_vcf"
-    
+    docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} \
+    somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${reference_genome_prefix}.fa" /data/${input_vcf}
+
     chmod 777 extracted/
 
     # The somalier file is in extracted folder, move to the main folder
