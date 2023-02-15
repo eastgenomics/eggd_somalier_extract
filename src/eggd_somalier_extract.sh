@@ -31,26 +31,26 @@ main() {
     docker load -i "${somalier_docker_name}"
 
     # Get image id from docker image loaded
-    VEP_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
+    SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
 
-    docker run -v /home/dnanexus:/data "${VEP_IMAGE_ID}" gunzip /data/"${reference_genome_name}"
+    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_name}"
 
-    docker run -v /home/dnanexus:/data "${VEP_IMAGE_ID}" gunzip /data/"${reference_genome_index_name}"
+    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_index_name}"
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
     if [[ "$sample_vcf_name" == *.vcf ]]; then
-        docker run -v /home/dnanexus:/data ${VEP_IMAGE_ID} bgzip /data/"${sample_vcf_name}"
+        docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} bgzip /data/"${sample_vcf_name}"
         input_vcf="${sample_vcf_name}.gz"
     else
         echo 'Already compressed'
         input_vcf="${sample_vcf_name}"
     fi
 
-    docker run -v /home/dnanexus:/data ${VEP_IMAGE_ID} tabix -p vcf /data/${input_vcf}
+    docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} tabix -p vcf /data/${input_vcf}
 
-    docker run -v /home/dnanexus:/data ${VEP_IMAGE_ID} \
+    docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} \
     somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${reference_genome_prefix}.fa" /data/${input_vcf}
 
     chmod 777 extracted/
