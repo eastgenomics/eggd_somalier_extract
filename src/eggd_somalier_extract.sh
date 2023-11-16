@@ -9,8 +9,7 @@ main() {
 
     echo "sample_vcf: '$sample_vcf_name'"
     echo "snp_site_vcf: '$snp_site_vcf_name'"
-    echo "reference_genome: '$reference_genome_name'"
-    echo "reference_genome_index: '$reference_genome_index_name'"
+    echo "reference_fasta_tar: '$reference_fasta_tar_name'"
     echo "somalier_docker: '$somalier_docker_name'"
 
     echo "----------Load input data---------------"
@@ -33,10 +32,9 @@ main() {
     # Get image id from docker image loaded
     SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
+    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" tar -xzvf /data/"${reference_fasta_tar_name}" -C /data/
+    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
 
-    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_name}"
-
-    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_index_name}"
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
@@ -51,7 +49,7 @@ main() {
     docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} tabix -p vcf /data/${input_vcf}
 
     docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} \
-    somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${reference_genome_prefix}.fa" /data/${input_vcf}
+    somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${REF_GEN}" /data/${input_vcf}
 
     chmod 777 extracted/
 
