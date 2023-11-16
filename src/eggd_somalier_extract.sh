@@ -33,7 +33,7 @@ main() {
     SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
     docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" tar -xzvf /data/"${reference_fasta_tar_name}" -C /data/
-    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
+    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -print0)
 
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
