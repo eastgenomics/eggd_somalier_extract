@@ -5,12 +5,6 @@
   "dxapi": "1.0.0",
   "version": "1.2.0",
   "whatsNew": "* v1.2.0: Change inputs to take a tar file containing reference fasta file and index rather than input these two files seperately, update code.sh to find reference file following extraction from the tar file and accept additional fasta file extensions (.fas and .fasta)",
-  "authorizedUsers": [
-    "org-emee_1"
-  ],
-  "developers":[
-    "org-emee_1"
-  ],
   "inputSpec": [
     {
       "name": "sample_vcf",
