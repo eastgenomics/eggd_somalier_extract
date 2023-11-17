@@ -17,13 +17,16 @@ main() {
     dx-download-all-inputs --parallel
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/
 
+    # Extract reference genome and index tar then find the reference genome
+    # fasta file
+    tar -xzvf "${reference_fasta_tar_name}"
+    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
+
     # We need to store the filename as somalier extract will extract the
     # sample id only from the vcf - so the somalier output will be sampleID.somalier.
     # We need to retain the other information in the full filename to later
     # pull out reported sex in the filename.
-
     echo "----------Extract sites into extracted/ using docker---------------"
-
     service docker start
 
     # Load docker image
@@ -31,11 +34,6 @@ main() {
 
     # Get image id from docker image loaded
     SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
-
-    # Extract reference genome and index tar then find the reference genome
-    # fasta file
-    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" tar -xzvf /data/"${reference_fasta_tar_name}" -C /data/
-    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
 
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
