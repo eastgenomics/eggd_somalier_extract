@@ -9,8 +9,7 @@ main() {
 
     echo "sample_vcf: '$sample_vcf_name'"
     echo "snp_site_vcf: '$snp_site_vcf_name'"
-    echo "reference_genome: '$reference_genome_name'"
-    echo "reference_genome_index: '$reference_genome_index_name'"
+    echo "reference_fasta_tar: '$reference_fasta_tar_name'"
     echo "somalier_docker: '$somalier_docker_name'"
 
     echo "----------Load input data---------------"
@@ -18,13 +17,16 @@ main() {
     dx-download-all-inputs --parallel
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/
 
+    # Extract reference genome and index tar then find the reference genome
+    # fasta file
+    tar -xzvf "${reference_fasta_tar_name}"
+    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
+
     # We need to store the filename as somalier extract will extract the
     # sample id only from the vcf - so the somalier output will be sampleID.somalier.
     # We need to retain the other information in the full filename to later
     # pull out reported sex in the filename.
-
     echo "----------Extract sites into extracted/ using docker---------------"
-
     service docker start
 
     # Load docker image
@@ -33,10 +35,6 @@ main() {
     # Get image id from docker image loaded
     SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
-
-    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_name}"
-
-    docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" gunzip /data/"${reference_genome_index_name}"
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
 
@@ -51,7 +49,7 @@ main() {
     docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} tabix -p vcf /data/${input_vcf}
 
     docker run -v /home/dnanexus:/data ${SOM_IMAGE_ID} \
-    somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${reference_genome_prefix}.fa" /data/${input_vcf}
+    somalier extract -d data/extracted/ --sites /data/${snp_site_vcf_name} -f /data/"${REF_GEN}" /data/${input_vcf}
 
     chmod 777 extracted/
 

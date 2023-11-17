@@ -3,7 +3,7 @@
   "title": "eggd_somalier_extract",
   "summary": "Extracts the sites needed to do sex check",
   "dxapi": "1.0.0",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "inputSpec": [
     {
       "name": "sample_vcf",
@@ -17,7 +17,7 @@
     },
     {
       "name": "snp_site_vcf",
-      "label": "Snp sites vcfp provided by somalier",
+      "label": "Snp sites vcf provided by somalier",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -26,24 +26,14 @@
       "help": "vcf file containing sites to filter from sample vcf. Must be same build as reference genome."
     },
     {
-      "name": "reference_genome",
-      "label": "Reference genome",
+      "name": "reference_fasta_tar",
+      "label": "Reference genome and index tar file",
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.fa.gz"
+        "*.tar.gz"
       ],
-      "help": "Reference genome (build 37/38)."
-    },
-    {
-      "name": "reference_genome_index",
-      "label": "Indexed reference genome",
-      "class": "file",
-      "optional": false,
-      "patterns": [
-        "*.fasta-index.tar.gz"
-      ],
-      "help": "Indexed reference genome (build 37/38)."
+      "help": "Reference genome file and index contained in a tar file (build 37/38)."
     },
     {
       "name": "somalier_docker",
