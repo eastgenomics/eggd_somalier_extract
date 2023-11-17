@@ -32,8 +32,10 @@ main() {
     # Get image id from docker image loaded
     SOM_IMAGE_ID=$(sudo docker images --format="{{.Repository}} {{.ID}}" | grep "^brentp" | cut -d' ' -f2)
 
+    # Extract reference genome and index tar then find the reference genome
+    # fasta file
     docker run -v /home/dnanexus:/data "${SOM_IMAGE_ID}" tar -xzvf /data/"${reference_fasta_tar_name}" -C /data/
-    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -print0)
+    REF_GEN=$(find /home/dnanexus/ -type f \( -iname \*.fa -o -iname \*.fasta -o -iname \*.fas \) -printf "%f")
 
     # If sample is not bgzip, then bgzip it
     # use command file which describes what type of file you have
